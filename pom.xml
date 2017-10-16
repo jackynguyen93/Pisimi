@@ -6,7 +6,7 @@
 	<groupId>com.vqn</groupId>
 	<artifactId>pisimi</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 
 	<name>Pisimi</name>
 	<description>Simsimi for Pi</description>
@@ -34,11 +34,11 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
-		<!--<dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-tomcat</artifactId>
-			&lt;!&ndash;<scope>provided</scope>&ndash;&gt;
-		</dependency>-->
+			<!--<scope>provided</scope>-->
+		</dependency>
 
 
 		<dependency>

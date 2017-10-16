@@ -33,6 +33,13 @@ public class CrawlerService {
     }
 
     public String getCookie() {
+        try {
+            getCookieJob();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return cookie;
     }
 
@@ -40,47 +47,54 @@ public class CrawlerService {
   /*      ChromeOptions chromeOptions = new ChromeOptions();
         System.setProperty("webdriver.chrome.driver",webdriverPath);
         chromeOptions.addArguments("headless");*/
+
         System.out.println("Start crawling ...");
         System.setProperty("webdriver.gecko.driver",webdriverPath);
         DesiredCapabilities capabilities=DesiredCapabilities.firefox();
         capabilities.setCapability("marionette", true);
         FirefoxDriver driver = new FirefoxDriver(capabilities);
-        driver.get("http://www.simsimi.com/FirebaseAuthPage?ref=ChatSettings");
-        System.out.println("1. Open url");
-        WebDriverWait wait = new WebDriverWait(driver, 100);
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.className("firebaseui-list-item")));
+        try {
+            driver.get("http://www.simsimi.com/FirebaseAuthPage?ref=ChatSettings");
+            System.out.println("1. Open url");
+            WebDriverWait wait = new WebDriverWait(driver, 100);
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.className("firebaseui-list-item")));
 
-        driver.findElement(By.tagName("button")).click();
-        System.out.println("2. Login");
+            driver.findElement(By.tagName("button")).click();
+            System.out.println("2. Login");
 
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("input[type=email]")));
-        driver.findElement(By.cssSelector("input[type=email]")).sendKeys("vqn.vanquocnguyen@gmail.com");
-        driver.findElement(By.cssSelector("div[role=button]")).click();
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("input[type=email]")));
+            driver.findElement(By.cssSelector("input[type=email]")).sendKeys("vqn.vanquocnguyen@gmail.com");
+            driver.findElement(By.cssSelector("div[role=button]")).click();
 
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("input[type=password]")));
-        Thread.sleep(1000);
-        driver.findElement(By.cssSelector("input[type=password]")).sendKeys("vanlang12");
-        driver.findElement(By.cssSelector("div[role=button]")).click();
-        Thread.sleep(100);
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("input[type=password]")));
+            Thread.sleep(1000);
+            driver.findElement(By.cssSelector("input[type=password]")).sendKeys("vanlang12");
+            driver.findElement(By.cssSelector("div[role=button]")).click();
+            Thread.sleep(100);
 
-        System.out.println("3. Get cookie");
+            System.out.println("3. Get cookie");
 
-        new WebDriverWait(driver, 60)
-                .ignoring(NoAlertPresentException.class)
-                .until(ExpectedConditions.alertIsPresent());
-        driver.switchTo().alert().accept();
-        driver.manage().getCookies().forEach(c -> {
-            if ( c.getName().equals("dotcom_session_key")) {
-                setCookie(c.toString());
-            }
-        });
-        driver.close();
-        System.out.println("Finish crawling!");
+            new WebDriverWait(driver, 60)
+                    .ignoring(NoAlertPresentException.class)
+                    .until(ExpectedConditions.alertIsPresent());
+            driver.switchTo().alert().accept();
+            driver.manage().getCookies().forEach(c -> {
+                if (c.getName().equals("dotcom_session_key")) {
+                    setCookie(c.toString());
+                }
+            });
+
+            System.out.println("Finish crawling!");
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            driver.quit();
+        }
+
         return cookie;
     }
 
-    @Scheduled(fixedRate = 500000)
-    public void autoGetCookie() throws IOException, InterruptedException {
+    public void getCookieJob() throws IOException, InterruptedException {
         System.out.println("Getting cooking by schedule");
         //noinspection deprecation
         DefaultHttpClient httpClient = new DefaultHttpClient();
